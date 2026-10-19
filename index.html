@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070b13" />
+  <meta name="description" content="An interactive 3D atlas of a living star system. Choose a world, trace its orbit, and explore the quiet poetry of space." />
+  <title>Orbital Atlas — The Living System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{color-scheme:dark;--ink:#f1f3ef;--muted:#8b95a1;--dim:#515b69;--line:rgba(229,236,243,.12);--panel:rgba(12,18,28,.74);--mint:#bbf7d0;--mono:'DM Mono',monospace;--sans:'Manrope',sans-serif}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#070b13;color:var(--ink);font-family:var(--sans)}body{min-height:100vh;overflow:hidden;background:radial-gradient(ellipse at 54% 46%,#101b2a 0,#0a111d 42%,#070b13 78%)}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.17;background-image:linear-gradient(rgba(176,200,223,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(176,200,223,.08) 1px,transparent 1px);background-size:72px 72px;mask-image:linear-gradient(transparent 2%,#000 30%,#000 80%,transparent)}
+    #universe{position:fixed;inset:0;width:100%;height:100%;display:block;outline:none;z-index:0}
+    .shell{position:relative;z-index:1;min-height:100vh;max-width:1600px;margin:auto;padding:34px clamp(22px,5vw,76px) 28px;display:flex;flex-direction:column;pointer-events:none}
+    button,a,input{pointer-events:auto}header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:22px}
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}.brand-mark{width:33px;height:33px;border:1px solid rgba(187,247,208,.55);border-radius:50%;display:grid;place-items:center;color:var(--mint);font:14px var(--mono);position:relative}.brand-mark:after{content:"";position:absolute;width:42px;height:13px;border:1px solid rgba(187,247,208,.42);border-radius:50%;transform:rotate(-34deg)}.brand-name{font-size:12px;letter-spacing:.16em;font-weight:800}.brand-sub{font:9px var(--mono);letter-spacing:.15em;color:var(--muted);margin-top:4px}
+    .top-meta{display:flex;align-items:center;gap:24px;color:var(--muted);font:10px var(--mono);letter-spacing:.08em}.live{display:flex;align-items:center;gap:8px}.live i{display:block;width:6px;height:6px;background:var(--mint);border-radius:50%;box-shadow:0 0 12px var(--mint)}
+    main{flex:1;display:grid;grid-template-columns:minmax(300px,1fr) 306px;align-items:center;gap:32px;position:relative}
+    .intro{position:absolute;top:8.5%;left:0;max-width:400px;pointer-events:none}.eyebrow{font:10px var(--mono);letter-spacing:.17em;text-transform:uppercase;color:var(--mint);display:flex;align-items:center;gap:10px}.eyebrow:before{content:"";height:1px;width:25px;background:var(--mint);opacity:.7}.intro h1{font-size:clamp(34px,5vw,66px);line-height:.98;letter-spacing:-.065em;margin:18px 0 14px;font-weight:600}.intro h1 span{color:#aeb8c4;font-weight:400}.intro p{font-size:13px;line-height:1.75;color:#929dab;max-width:330px;margin:0}
+    .scene-note{position:absolute;left:0;bottom:17%;display:flex;gap:14px;align-items:center;color:var(--muted);font:9px var(--mono);letter-spacing:.13em;text-transform:uppercase;pointer-events:none}.scene-note .rule{width:44px;height:1px;background:var(--line)}
+    .data-card{grid-column:2;justify-self:end;width:100%;border:1px solid rgba(223,233,244,.14);background:linear-gradient(145deg,rgba(20,30,44,.78),rgba(10,15,24,.68));backdrop-filter:blur(22px);border-radius:18px;padding:22px;box-shadow:0 24px 90px rgba(0,0,0,.24);pointer-events:auto;position:relative;z-index:2}.card-overline{display:flex;justify-content:space-between;align-items:center;font:9px var(--mono);letter-spacing:.14em;color:var(--muted);text-transform:uppercase}.coord{color:#657386}.world-heading{display:flex;align-items:center;gap:13px;margin:22px 0 8px}.world-swatch{height:36px;width:36px;border-radius:50%;box-shadow:inset -8px -6px 12px rgba(0,0,0,.4),0 0 24px color-mix(in srgb,var(--world-color),transparent 74%);background:var(--world-color);border:1px solid rgba(255,255,255,.36)}h2{font-size:25px;letter-spacing:-.05em;margin:0;font-weight:600}.world-type{font:9px var(--mono);letter-spacing:.11em;color:var(--muted);text-transform:uppercase;margin-top:5px}.world-copy{font-size:11px;line-height:1.75;color:#a1aab7;min-height:58px;margin:17px 0 20px}.stats{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:15px 0;gap:15px 8px}.stat-label{font:8px var(--mono);letter-spacing:.13em;color:#6f7a89;text-transform:uppercase}.stat-value{font:12px var(--mono);color:#e3e9ed;margin-top:7px}.world-picker-label{display:flex;justify-content:space-between;margin:19px 0 9px;font:8px var(--mono);letter-spacing:.13em;color:#748090;text-transform:uppercase}.world-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.world-btn{appearance:none;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);border-radius:9px;height:35px;color:#8d98a5;cursor:pointer;font:9px var(--mono);transition:.2s}.world-btn:hover,.world-btn[aria-pressed="true"]{background:rgba(187,247,208,.12);border-color:rgba(187,247,208,.55);color:var(--mint);transform:translateY(-1px)}
+    footer{border-top:1px solid var(--line);padding-top:17px;display:flex;align-items:center;justify-content:space-between;color:#778292;font:9px var(--mono);letter-spacing:.08em} .footer-left{display:flex;gap:20px;align-items:center}.footer-dot{width:4px;height:4px;background:#83909f;border-radius:50%}.controls{display:flex;gap:8px;align-items:center}.control-btn{appearance:none;border:1px solid rgba(225,236,247,.15);border-radius:99px;padding:9px 13px;color:#aeb8c4;background:rgba(255,255,255,.035);font:9px var(--mono);letter-spacing:.05em;cursor:pointer;transition:.2s}.control-btn:hover{border-color:rgba(187,247,208,.55);color:var(--mint);background:rgba(187,247,208,.07)}.speed{display:flex;align-items:center;gap:9px;margin-left:8px}.speed label{font:8px var(--mono);color:#727f8d;letter-spacing:.1em}.speed input{accent-color:#bbf7d0;width:75px;height:2px}.speed output{font:9px var(--mono);color:#aeb8c4;min-width:20px}
+    .hint{position:absolute;right:332px;bottom:17%;font:9px var(--mono);color:#84909e;letter-spacing:.08em;display:flex;gap:9px;align-items:center;pointer-events:none}.mouse-icon{width:13px;height:18px;border:1px solid #657180;border-radius:8px;position:relative}.mouse-icon:after{content:"";position:absolute;width:1px;height:4px;background:#a9b3bf;left:5px;top:3px}
+    .error{display:none;position:fixed;inset:0;z-index:5;background:#070b13;place-items:center;padding:32px;text-align:center}.error>div{max-width:430px}.error h2{font-size:28px}.error p{color:var(--muted);line-height:1.7;font-size:13px}
+    @media(max-width:800px){body{overflow:auto}.shell{min-height:100svh;padding:22px 20px 18px}header{padding-bottom:16px}.top-meta{gap:12px}.top-meta .edition{display:none}main{display:block;min-height:calc(100svh - 130px);padding:0}.intro{top:7%;max-width:260px}.intro h1{font-size:clamp(38px,11vw,58px);margin-top:14px}.intro p{font-size:11px;max-width:245px}.data-card{position:absolute;right:0;bottom:6%;width:min(306px,100%);padding:16px;border-radius:15px}.world-heading{margin:14px 0 5px}h2{font-size:21px}.world-copy{min-height:40px;margin:10px 0 13px;font-size:10px}.stats{padding:11px 0;gap:11px}.world-picker-label{margin-top:13px}.scene-note{bottom:45%;font-size:8px}.hint{display:none}footer{gap:10px;padding-top:12px}.footer-left{gap:9px;font-size:8px}.speed label{display:none}.speed input{width:56px}.control-btn{padding:8px 10px;font-size:8px}.controls{gap:5px}}
+    @media(max-width:430px){.top-meta{font-size:8px}.intro{max-width:215px}.intro p{max-width:210px}.data-card{bottom:5%}.scene-note{bottom:47%}.footer-left .footer-credit{display:none}.speed{margin-left:2px}.speed input{width:45px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+  <canvas id="universe" aria-label="Interactive 3D model of a star system. Select a planet from the panel to inspect it; drag to rotate and scroll to zoom."></canvas>
+  <div class="shell">
+    <header>
+      <a class="brand" href="#" aria-label="Orbital Atlas home"><span class="brand-mark" aria-hidden="true">O</span><span><span class="brand-name">ORBITAL ATLAS</span><span class="brand-sub">FIELD NOTES · VOL. 01</span></span></a>
+      <div class="top-meta"><span class="edition">A SMALL STUDY OF DISTANCE</span><span class="live"><i></i> SYSTEM ONLINE</span></div>
+    </header>
+    <main>
+      <section class="intro" aria-labelledby="page-title"><div class="eyebrow">01 / THE LIVING SYSTEM</div><h1 id="page-title">Worlds<br><span>in motion.</span></h1><p>A quiet corner of the cosmos, held in balance by gravity. Choose a world and follow the light home.</p></section>
+      <div class="scene-note"><span class="rule"></span><span>Heliocentric study</span><span>·</span><span id="scene-count">05 bodies mapped</span></div>
+      <aside class="data-card" aria-label="Selected world details" aria-live="polite">
+        <div class="card-overline"><span>ATLAS ENTRY <span id="world-index">01</span></span><span class="coord" id="world-coord">SOL / 0.0 AU</span></div>
+        <div class="world-heading"><div class="world-swatch" id="world-swatch"></div><div><h2 id="world-name">Sol</h2><div class="world-type" id="world-type">G-type main sequence star</div></div></div>
+        <p class="world-copy" id="world-copy">A patient furnace at the center of everything. Its light takes eight minutes to find the small blue world we call home.</p>
+        <div class="stats"><div><div class="stat-label">Mean orbit</div><div class="stat-value" id="world-distance">0 AU</div></div><div><div class="stat-label">Surface</div><div class="stat-value" id="world-temp">5,500 °C</div></div><div><div class="stat-label">Day length</div><div class="stat-value" id="world-day">25.4 days</div></div><div><div class="stat-label">Known moons</div><div class="stat-value" id="world-moons">0</div></div></div>
+        <div class="world-picker-label"><span>Navigate the atlas</span><span>01—05</span></div><div class="world-picker" role="group" aria-label="Choose a celestial body"><button class="world-btn" data-world="sol" aria-pressed="true" aria-label="Select Sol">SOL</button><button class="world-btn" data-world="mercury" aria-pressed="false" aria-label="Select Mercury">MER</button><button class="world-btn" data-world="terra" aria-pressed="false" aria-label="Select Terra">TER</button><button class="world-btn" data-world="mars" aria-pressed="false" aria-label="Select Mars">MAR</button><button class="world-btn" data-world="saturn" aria-pressed="false" aria-label="Select Saturn">SAT</button></div>
+      </aside>
+      <div class="hint"><span class="mouse-icon"></span><span>DRAG TO ORBIT · SCROLL TO EXPLORE</span></div>
+    </main>
+    <footer><div class="footer-left"><span>INTERACTIVE ORRERY</span><span class="footer-dot"></span><span class="footer-credit">MADE FOR THE CURIOUS</span></div><div class="controls"><button id="pause" class="control-btn" aria-pressed="false">Ⅱ &nbsp; PAUSE</button><button id="reset" class="control-btn">↺ &nbsp; RESET VIEW</button><div class="speed"><label for="speed">TIME</label><input id="speed" type="range" min="0" max="2" step="0.1" value="0.7" aria-label="Animation speed"><output id="speed-value">0.7×</output></div></div></footer>
+  </div>
+  <div class="error" id="error"><div><div class="eyebrow" style="justify-content:center">A WINDOW TO THE COSMOS</div><h2>WebGL is unavailable</h2><p>This browser could not start the 3D scene. Try a recent version of Chrome, Safari, or Firefox with hardware acceleration enabled.</p></div></div>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const canvas = document.querySelector('#universe');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x070b13, 0.008);
+    const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 500);
+    camera.position.set(0, 14, 34);
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true, powerPreference:'high-performance'});
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.35;
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.055;
+    controls.enablePan = false;
+    controls.minDistance = 12;
+    controls.maxDistance = 58;
+    controls.maxPolarAngle = Math.PI * 0.82;
+    controls.target.set(0, 0, 0);
+
+    scene.add(new THREE.AmbientLight(0x8ea5c0, 0.8));
+    const sunLight = new THREE.PointLight(0xffd9a3, 210, 115, 1.35);
+    sunLight.position.set(0,0,0); scene.add(sunLight);
+    const fill = new THREE.DirectionalLight(0x8dbbff, 1.2); fill.position.set(-12,8,15); scene.add(fill);
+
+    function rand(seed){let x=seed|0;return()=>{x=(x*1664525+1013904223)|0;return(x>>>0)/4294967296}}
+    function makeTexture(base, accent, seed, bands=false){
+      const c=document.createElement('canvas');c.width=1024;c.height=512;const ctx=c.getContext('2d');
+      const g=ctx.createLinearGradient(0,0,0,512);g.addColorStop(0,accent);g.addColorStop(.5,base);g.addColorStop(1,accent);ctx.fillStyle=g;ctx.fillRect(0,0,1024,512);
+      const r=rand(seed);
+      if(bands){for(let i=0;i<34;i++){const y=r()*512,h=3+r()*22;ctx.globalAlpha=.035+r()*.12;ctx.fillStyle=r()>.5?accent:'#f5d9b1';ctx.fillRect(0,y,1024,h)}ctx.globalAlpha=1}
+      for(let i=0;i<1400;i++){const x=r()*1024,y=r()*512,w=2+r()*22,h=1+r()*5;ctx.globalAlpha=.025+r()*.13;ctx.fillStyle=r()>.5?'#fff': '#02050a';ctx.beginPath();ctx.ellipse(x,y,w,h,r()*.5,0,Math.PI*2);ctx.fill()}
+      if(seed===3){ctx.globalAlpha=.28;ctx.fillStyle='#e3d5c7';ctx.beginPath();ctx.ellipse(580,263,58,25,-.16,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}
+      const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;return tex;
+    }
+    const starfieldGeo=new THREE.BufferGeometry(), starPos=[], starColor=[];const sr=rand(76);
+    for(let i=0;i<1800;i++){const radius=55+sr()*115, theta=sr()*Math.PI*2, phi=Math.acos(2*sr()-1);starPos.push(radius*Math.sin(phi)*Math.cos(theta),radius*Math.cos(phi),radius*Math.sin(phi)*Math.sin(theta));const b=.45+sr()*.55;starColor.push(.65*b,.78*b,b)}
+    starfieldGeo.setAttribute('position',new THREE.Float32BufferAttribute(starPos,3));starfieldGeo.setAttribute('color',new THREE.Float32BufferAttribute(starColor,3));
+    const starfield=new THREE.Points(starfieldGeo,new THREE.PointsMaterial({size:.23,vertexColors:true,transparent:true,opacity:.74,sizeAttenuation:true}));scene.add(starfield);
+    const dustGeo=new THREE.BufferGeometry(),dustPos=[];for(let i=0;i<850;i++){const radius=28+sr()*90,theta=sr()*Math.PI*2;dustPos.push(Math.cos(theta)*radius,(sr()-.5)*38,Math.sin(theta)*radius)}dustGeo.setAttribute('position',new THREE.Float32BufferAttribute(dustPos,3));scene.add(new THREE.Points(dustGeo,new THREE.PointsMaterial({color:0x8aa7c4,size:.045,transparent:true,opacity:.35})));
+
+    const sunGroup=new THREE.Group();scene.add(sunGroup);
+    const sun=new THREE.Mesh(new THREE.SphereGeometry(1.42,64,64),new THREE.MeshStandardMaterial({color:0xffcf83,emissive:0xff941f,emissiveIntensity:1.55,roughness:.8,map:makeTexture('#ec9c44','#ffe1a8',8,true)}));sunGroup.add(sun);
+    function glowSprite(color,scale,opacity){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');const g=x.createRadialGradient(128,128,0,128,128,128);g.addColorStop(0,'rgba(255,244,212,.95)');g.addColorStop(.11,color);g.addColorStop(1,'rgba(255,166,70,0)');x.fillStyle=g;x.fillRect(0,0,256,256);const t=new THREE.CanvasTexture(c);const m=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,opacity,depthWrite:false,blending:THREE.AdditiveBlending}));m.scale.setScalar(scale);return m}
+    sunGroup.add(glowSprite('rgba(255,181,85,.36)',7.5,.58));
+    const corona=new THREE.Mesh(new THREE.SphereGeometry(1.62,48,48),new THREE.MeshBasicMaterial({color:0xffbf69,transparent:true,opacity:.12,side:THREE.BackSide}));sunGroup.add(corona);
+
+    const entries=[
+      {id:'sol',name:'Sol',type:'G-type main sequence star',color:'#ffc779',map:'#e99e48',accent:'#ffe2a8',size:1.42,distance:0,temp:'5,500 °C',day:'25.4 days',moons:'0',copy:'A patient furnace at the center of everything. Its light takes eight minutes to find the small blue world we call home.',seed:11,period:0},
+      {id:'mercury',name:'Mercury',type:'Terrestrial · cratered world',color:'#beb8ac',map:'#716d67',accent:'#c7b9a5',size:.42,distance:'0.39 AU',temp:'167 °C',day:'58.6 days',moons:'0',copy:'A small, iron-rich world with a long memory written in impact scars. Its sunrise waits through a 176-day solar day.',seed:21,period:4.8},
+      {id:'terra',name:'Terra',type:'Terrestrial · ocean world',color:'#77bde2',map:'#286b93',accent:'#3ca778',size:.68,distance:'1.00 AU',temp:'15 °C',day:'23h 56m',moons:'1',copy:'One known harbor for life. Clouds gather over cobalt oceans while a silver companion keeps quiet watch.',seed:3,period:8.2},
+      {id:'mars',name:'Mars',type:'Terrestrial · desert world',color:'#e98a66',map:'#9a5038',accent:'#dc9a72',size:.55,distance:'1.52 AU',temp:'−65 °C',day:'24h 37m',moons:'2',copy:'Rust-red dust, ancient river valleys, and two tiny moons. A world of unfinished questions, waiting at the edge of the habitable zone.',seed:37,period:12.8},
+      {id:'saturn',name:'Saturn',type:'Gas giant · ringed planet',color:'#e6c68a',map:'#b09361',accent:'#e3d0a3',size:1.03,distance:'9.58 AU',temp:'−140 °C',day:'10h 42m',moons:'146',copy:'A world made of weather and wonder. Its pale rings are countless fragments of ice, each keeping its own orbit.',seed:42,period:19.2,bands:true}
+    ];
+    const orbitGroup=new THREE.Group();scene.add(orbitGroup);const pickables=[];const planets={};
+    function addOrbit(radius, color=0x93a7bd){const curve=new THREE.EllipseCurve(0,0,radius,radius*.72,0,Math.PI*2,false,0);const pts=curve.getPoints(240).map(p=>new THREE.Vector3(p.x,0,p.y));const geometry=new THREE.BufferGeometry().setFromPoints(pts);const line=new THREE.LineLoop(geometry,new THREE.LineBasicMaterial({color,transparent:true,opacity:.18}));line.rotation.x=.015;orbitGroup.add(line)}
+    const bodies=[entries[1],entries[2],entries[3],entries[4]];
+    const radii={mercury:3.5,terra:6.2,mars:9.2,saturn:13.2};
+    bodies.forEach((d,i)=>{
+      const radius=radii[d.id];addOrbit(radius);
+      const group=new THREE.Group();group.rotation.x=(i-1.5)*.025;orbitGroup.add(group);
+      const holder=new THREE.Group();group.add(holder);
+      const material=new THREE.MeshStandardMaterial({color:d.color,roughness:d.id==='terra'?.72:.94,metalness:.02,map:makeTexture(d.map,d.accent,d.seed,d.bands)});
+      const mesh=new THREE.Mesh(new THREE.SphereGeometry(d.size,48,48),material);holder.add(mesh);
+      const atmosphere=new THREE.Mesh(new THREE.SphereGeometry(d.size*1.065,40,40),new THREE.MeshBasicMaterial({color:d.color,transparent:true,opacity:d.id==='terra'?.1:.035,side:THREE.BackSide}));holder.add(atmosphere);
+      if(d.id==='terra'){
+        const moonOrbit=new THREE.Mesh(new THREE.TorusGeometry(1.08,.005,4,80),new THREE.MeshBasicMaterial({color:0xb4c7d7,transparent:true,opacity:.27}));moonOrbit.rotation.x=Math.PI/2.5;holder.add(moonOrbit);
+        const moon=new THREE.Mesh(new THREE.SphereGeometry(.13,24,24),new THREE.MeshStandardMaterial({color:0xbfc3c2,roughness:1,map:makeTexture('#777c80','#c9c9bd',93)}));moon.position.set(1.05,.12,0);holder.add(moon);planets[d.id].moon=moon;
+      }
+      if(d.id==='saturn'){
+        const ring=new THREE.Mesh(new THREE.RingGeometry(d.size*1.28,d.size*2.05,96),new THREE.MeshStandardMaterial({color:0xc7ae7b,roughness:.9,metalness:.04,side:THREE.DoubleSide,transparent:true,opacity:.82}));ring.rotation.x=Math.PI/2.28;holder.add(ring);
+        const ring2=new THREE.Mesh(new THREE.RingGeometry(d.size*1.12,d.size*1.24,96),new THREE.MeshStandardMaterial({color:0xf0dcad,side:THREE.DoubleSide,transparent:true,opacity:.72}));ring2.rotation.copy(ring.rotation);holder.add(ring2);
+      }
+      const angle=i*.92+.35;group.position.set(Math.cos(angle)*radius,0,Math.sin(angle)*radius*.72);planets[d.id]={data:d,group,holder,mesh,angle,radius};pickables.push(mesh);
+    });
+    pickables.push(sun);
+
+    function focus(id){const d=entries.find(x=>x.id===id);if(!d)return;document.documentElement.style.setProperty('--world-color',d.color);document.querySelector('#world-name').textContent=d.name;document.querySelector('#world-type').textContent=d.type;document.querySelector('#world-copy').textContent=d.copy;document.querySelector('#world-distance').textContent=d.id==='sol'?'0 AU':d.distance;document.querySelector('#world-temp').textContent=d.temp;document.querySelector('#world-day').textContent=d.day;document.querySelector('#world-moons').textContent=d.moons;document.querySelector('#world-index').textContent=String(entries.indexOf(d)+1).padStart(2,'0');document.querySelector('#world-coord').textContent=(d.id==='sol'?'SOL':d.id.toUpperCase())+' / '+(d.id==='sol'?'0.0 AU':d.distance.toUpperCase());document.querySelectorAll('.world-btn').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.world===id)));const target=id==='sol'?sun.position:planets[id]?.group.position;if(target&&id!=='sol')controls.target.lerp(target,.45);else controls.target.set(0,0,0)}
+    document.querySelectorAll('.world-btn').forEach(b=>b.addEventListener('click',()=>focus(b.dataset.world)));
+    const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();canvas.addEventListener('pointerup',event=>{if(event.button!==0)return;const rect=canvas.getBoundingClientRect();pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObjects(pickables,false)[0];if(hit){const id=hit.object===sun?'sol':Object.keys(planets).find(key=>planets[key].mesh===hit.object);if(id)focus(id)}});
+    let paused=false,speed=.7;const pauseBtn=document.querySelector('#pause');pauseBtn.addEventListener('click',()=>{paused=!paused;pauseBtn.setAttribute('aria-pressed',String(paused));pauseBtn.innerHTML=paused?'▶ &nbsp; RESUME':'Ⅱ &nbsp; PAUSE'});document.querySelector('#reset').addEventListener('click',()=>{camera.position.set(0,14,34);controls.target.set(0,0,0);controls.update();focus('sol')});document.querySelector('#speed').addEventListener('input',e=>{speed=Number(e.target.value);document.querySelector('#speed-value').textContent=speed.toFixed(1)+'×'});
+    let last=performance.now();function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-last)/1000,.04);last=now;if(!paused){sun.rotation.y+=dt*.08*speed;sunGroup.rotation.y+=dt*.025*speed;bodies.forEach(d=>{const p=planets[d.id];p.angle+=dt*(.15/d.period)*speed;p.group.position.set(Math.cos(p.angle)*p.radius,Math.sin(p.angle*1.3)*.08,Math.sin(p.angle)*p.radius*.72);p.mesh.rotation.y+=dt*.16*speed;if(p.moon)p.moon.position.set(Math.cos(now*.00045)*1.05,.12,Math.sin(now*.00045)*1.05)})}starfield.rotation.y+=dt*.001;controls.update();renderer.render(scene,camera)}
+    function resize(){camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<800?48:42;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight)}window.addEventListener('resize',resize);resize();requestAnimationFrame(animate);
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches){paused=true;pauseBtn.setAttribute('aria-pressed','true');pauseBtn.innerHTML='▶ &nbsp; RESUME'}
+  </script>
+</body>
+</html>
