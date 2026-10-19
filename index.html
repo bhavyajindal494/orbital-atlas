@@ -123,15 +123,15 @@
       const material=new THREE.MeshStandardMaterial({color:d.color,roughness:d.id==='terra'?.72:.94,metalness:.02,map:makeTexture(d.map,d.accent,d.seed,d.bands)});
       const mesh=new THREE.Mesh(new THREE.SphereGeometry(d.size,48,48),material);holder.add(mesh);
       const atmosphere=new THREE.Mesh(new THREE.SphereGeometry(d.size*1.065,40,40),new THREE.MeshBasicMaterial({color:d.color,transparent:true,opacity:d.id==='terra'?.1:.035,side:THREE.BackSide}));holder.add(atmosphere);
-      if(d.id==='terra'){
+      let moon;if(d.id==='terra'){
         const moonOrbit=new THREE.Mesh(new THREE.TorusGeometry(1.08,.005,4,80),new THREE.MeshBasicMaterial({color:0xb4c7d7,transparent:true,opacity:.27}));moonOrbit.rotation.x=Math.PI/2.5;holder.add(moonOrbit);
-        const moon=new THREE.Mesh(new THREE.SphereGeometry(.13,24,24),new THREE.MeshStandardMaterial({color:0xbfc3c2,roughness:1,map:makeTexture('#777c80','#c9c9bd',93)}));moon.position.set(1.05,.12,0);holder.add(moon);planets[d.id].moon=moon;
+        moon=new THREE.Mesh(new THREE.SphereGeometry(.13,24,24),new THREE.MeshStandardMaterial({color:0xbfc3c2,roughness:1,map:makeTexture('#777c80','#c9c9bd',93)}));moon.position.set(1.05,.12,0);holder.add(moon);
       }
       if(d.id==='saturn'){
         const ring=new THREE.Mesh(new THREE.RingGeometry(d.size*1.28,d.size*2.05,96),new THREE.MeshStandardMaterial({color:0xc7ae7b,roughness:.9,metalness:.04,side:THREE.DoubleSide,transparent:true,opacity:.82}));ring.rotation.x=Math.PI/2.28;holder.add(ring);
         const ring2=new THREE.Mesh(new THREE.RingGeometry(d.size*1.12,d.size*1.24,96),new THREE.MeshStandardMaterial({color:0xf0dcad,side:THREE.DoubleSide,transparent:true,opacity:.72}));ring2.rotation.copy(ring.rotation);holder.add(ring2);
       }
-      const angle=i*.92+.35;group.position.set(Math.cos(angle)*radius,0,Math.sin(angle)*radius*.72);planets[d.id]={data:d,group,holder,mesh,angle,radius};pickables.push(mesh);
+      const angle=i*.92+.35;group.position.set(Math.cos(angle)*radius,0,Math.sin(angle)*radius*.72);planets[d.id]={data:d,group,holder,mesh,moon,angle,radius};pickables.push(mesh);
     });
     pickables.push(sun);
 
